@@ -19,7 +19,8 @@ $router = new Router();
 
 $router
     ->get('/', [HomeController::class, 'index'])
-    ->get('/transactions', [HomeController::class, 'transactions']);
+    ->get('/transaction/create', [HomeController::class, 'create'])
+    ->post('/transaction/transactions', [HomeController::class, 'transactions']);
 
 (new App(
     $router,
