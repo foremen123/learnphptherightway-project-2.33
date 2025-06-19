@@ -5,6 +5,7 @@ declare(strict_types = 1);
 use App\App;
 use App\Config;
 use App\Controllers\HomeController;
+use App\Controllers\TransactionController;
 use App\Router;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -19,8 +20,8 @@ $router = new Router();
 
 $router
     ->get('/', [HomeController::class, 'index'])
-    ->get('/transaction/create', [HomeController::class, 'create'])
-    ->post('/transaction/transactions', [HomeController::class, 'transactions']);
+    ->get('/create', [TransactionController::class, 'create'])
+    ->post('/transactions', [TransactionController::class, 'transactions']);
 
 (new App(
     $router,
