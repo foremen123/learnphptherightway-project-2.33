@@ -19,7 +19,6 @@ class TransactionController
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-
         $transactions = $_SESSION['transactions']?? [];
         $total = $_SESSION['total']?? ['income' => 0, 'expense' => 0, 'net' => 0];
 
