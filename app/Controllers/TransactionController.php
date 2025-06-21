@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+session_start();
+
 use App\Models\TransactionsModel;
 use App\Transaction;
 use App\TransactionsCalculate;
@@ -18,14 +20,14 @@ class TransactionController
             session_start();
         }
 
-        $transactions = $_SESSION['transactions'] ?? [];
-        $total = $_SESSION['total'] ?? 0;
+        $transactions = $_SESSION['transactions']?? [];
+        $total = $_SESSION['total']?? ['income' => 0, 'expense' => 0, 'net' => 0];
 
         unset($_SESSION['transactions'], $_SESSION['total']);
 
         return View::make('transaction/transactions',
             [
-                'transactions' => $transactions,
+                'transactions' => $transactions ,
                 'total' => $total
             ]);
     }

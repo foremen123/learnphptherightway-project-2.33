@@ -26,7 +26,7 @@ class TransactionsFormatter
 
     public static function dateFormatted (string $date):string
     {
-        return DateTime::createFromFormat('y-m-d', $date)->format('M-j-o');
+        return (\DateTime::createFromFormat('Y-m-d', $date))->format('M-j-o');
     }
 
     public static function amountDB (string $amount): float

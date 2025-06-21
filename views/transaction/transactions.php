@@ -21,6 +21,7 @@
             tfoot tr th {
                 text-align: right;
             }
+
         </style>
     </head>
     <body>
@@ -34,7 +35,16 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- TODO -->
+                <?php foreach ($transactions as $transaction): ?>
+                <tr>
+                    <td><?=$transaction['date'] ?></td>
+                    <td><?=$transaction['check_number'] ?></td>
+                    <td><?=$transaction['description'] ?></td>
+                    <td style="color:
+                    <?= (float) str_replace(['$',','], '', $transaction['amount']) > 0 ? 'green' : 'red'; ?>">
+                        <?=$transaction['amount'] ?></td>
+                </tr>
+                <?php endforeach; ?>
             </tbody>
             <tfoot>
                 <tr>
