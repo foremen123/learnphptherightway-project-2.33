@@ -31,6 +31,7 @@ class TransactionsFormatter
 
     public static function amountDB (string $amount): float
     {
-       return (float) str_replace(['$', ','], '', $amount);
+       return (float) str_replace(['$', ','], [''], $amount);
+
     }
 }

@@ -33,7 +33,7 @@ class TransactionsModel extends Model
             }
             $this->db->commit();
 
-        } catch (\Exception $e) {
+        } catch (\PDOException $e) {
             if ($this->db->inTransaction()){
                 $this->db->rollBack();
             }
@@ -47,7 +47,7 @@ class TransactionsModel extends Model
     {
         $this->db->beginTransaction();
 
-        $stmt = $this->db->prepare('SELECT * FROM transaction');
+        $stmt = $this->db->prepare('SELECT * FROM transactions');
         $stmt->execute();
         $transactions = $stmt->fetchAll();
 
@@ -56,10 +56,10 @@ class TransactionsModel extends Model
         foreach ($transactions as $transaction) {
             $transaction =
                 [
-                    'date' => $transactions['date'],
-                    'check_number' => (int) $transaction['check_number'] ?? null,
-                    'description' => $transaction['description'],
-                    'amount' => TransactionsFormatter::amountDollars($transaction['amount'])
+                    'date' => $transactions[1],
+                    'check_number' => (int) $transaction[2] ?? null,
+                    'description' => $transaction[3],
+                    'amount' => TransactionsFormatter::amountDollars((float) $transaction['4'])
                 ];
             $formattedTransactions[] = $transaction;
         }

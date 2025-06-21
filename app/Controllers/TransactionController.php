@@ -39,12 +39,12 @@ class TransactionController
         $transactions = $transactionService->openFile($fileName, [$transactionService, 'extractTransaction']);
 
         $transactionModel->addTransactions($transactions);
-        $transactions = $transactionModel->getAll();
+        $transactionsFormatted = $transactionModel->getAll();
 
         $total = TransactionsCalculate::totalCalculate($transactions);
         $total = TransactionsCalculate::totalFormatted($total);
 
-        $_SESSION['transactions'] = $transactions;
+        $_SESSION['transactions'] = $transactionsFormatted;
         $_SESSION['total'] = $total;
 
         header('Location: /transactions');
