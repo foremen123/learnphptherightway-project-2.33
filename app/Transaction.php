@@ -1,31 +1,19 @@
 <?php
 
-namespace App;
+declare(strict_types=1);
 
-use App\Exceptions\TransactionGetException;
+namespace App;
 
 class Transaction
 {
-    /** Здесь будет логика извлечения данных из .csv
-     * Здесь получение имени файла, и передача в массиве
-     * Также должен быть метод, который будет изменять данные поступаемые в транзакцию
-    **/
+    // Здесь должно быть открытие файла, и поиск пути к файлу транзакций
 
-    public function getTransactions(string $fileName, ?callable $transactionHandler): array
+    public function openFile ($dirName, ?callable $transactionHandler): array
     {
-        if (!file_exists($fileName)) {
-            http_response_code(404);
-
-            throw new TransactionGetException();
-        }
-
-        $file = fopen($fileName, 'r');
+        $file = fopen($dirName, 'r');
 
         if ($file === false) {
-
-            http_response_code(500);
-
-            throw new TransactionGetException('Failed to open file: ' . $fileName);
+            throw new \PDOException(' Не найден файл');
         }
 
         fgetcsv($file);
@@ -33,46 +21,30 @@ class Transaction
         $transactions = [];
 
         while (($transaction = fgetcsv($file)) !== false) {
+
             if ($transactionHandler !== null) {
-                $transaction = $transactionHandler($transaction);
+                $transaction = call_user_func($transactionHandler, $transaction);
             }
 
             $transactions[] = $transaction;
         }
 
         fclose($file);
-
         return $transactions;
     }
 
-    public function getTransactionsFiles (string $dirPath): array {
+    public function extractTransaction ($transaction): array
+    {
+        [$date, $check_number, $description, $amount] = $transaction;
 
-        $files = [];
-
-        foreach (scandir($dirPath) as $file) {
-            if (is_file($dirPath . $file) && pathinfo($file, PATHINFO_EXTENSION) === 'csv') {
-                $files[] = $dirPath . DIRECTORY_SEPARATOR . $file;
-            }
-        }
-
-        return $files;
+        return
+            [
+                'date' => TransactionsFormatter::dateDB($date),
+                'check_number' => $check_number !== '' ? (int) $check_number : null,
+                'description' => $description,
+                'amount' => TransactionsFormatter::amountDB($amount)
+            ];
     }
 
-    public function extractTransaction (array $transactions): array {
-        $key = ['date', 'check_number', 'descriptions', 'amount'];
-        $transactions = array_combine($key, $transactions);
-        [$date, $checkNumber, $descriptions, $amount] = array_values($transactions);
 
-        $date = date('Y-m-d', strtotime($date));
-        $checkNumber = (int) $checkNumber ?? null;
-        $descriptions = trim($descriptions);
-        $amount = (float) str_replace(['$', ','], '', $amount);
-
-        return [
-            'date' => Helper::formatDate($date),
-            'check_number' => $checkNumber,
-            'descriptions' => $descriptions,
-            'amount' => Helper::formatAmount($amount)
-        ];
-    }
 }

@@ -1,59 +1,55 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controllers;
 
-use App\CalculateTransaction;
-use App\Exceptions\TransactionAddException;
-use App\Helper;
-use App\Models\TransactionModel;
+session_start();
+
+use App\Models\TransactionsModel;
 use App\Transaction;
+use App\TransactionsCalculate;
 use App\View;
 
 class TransactionController
 {
-    private $transaction;
-    private $transactionModel;
-
-    public function __construct()
+    // здесь будем все вызывать, проверка поста, и файла создание переменной с файлом, запись в бд, и вывод остального уже от рефакторенного
+    public function transactions(): View
     {
-        $this->transaction = new Transaction();
-        $this->transactionModel = new TransactionModel();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $transactions = $_SESSION['transactions']?? [];
+        $total = $_SESSION['total']?? ['income' => 0, 'expense' => 0, 'net' => 0];
+
+        unset($_SESSION['transactions'], $_SESSION['total']);
+
+        return View::make('transaction/transactions',
+            [
+                'transactions' => $transactions ,
+                'total' => $total
+            ]);
     }
 
-    public function transactions()
+    public function store(): void
     {
-        try {
-            if (!isset($_FILES['upload']) || $_FILES['upload']['error'] !== UPLOAD_ERR_OK) {
-                http_response_code(400);
-                return View::make('error/404', ['message' => 'Ошибка загрузки файла']);
-            }
+        $fileName = $_FILES['upload']['tmp_name'];
+        $transactionService = new Transaction();
+        $transactionModel = new TransactionsModel();
 
-            $transactions = $this->transaction->getTransactions(
-                $_FILES['upload']['tmp_name'],
-                [$this->transaction, 'extractTransaction']
-            );
+        $transactions = $transactionService->openFile($fileName, [$transactionService, 'extractTransaction']);
 
-            if (empty($transactions)) {
-                http_response_code(404);
-                return View::make('error/404', ['message' => 'Не найдено ни одной транзакции']);
-            }
+        $transactionModel->addTransactions($transactions);
+        $transactionsFormatted = $transactionModel->getAll();
 
-            $this->transactionModel->addTransactions($transactions);
+        $total = TransactionsCalculate::totalCalculate($transactions);
+        $total = TransactionsCalculate::totalFormatted($total);
 
-            $dbTransactions = $this->transactionModel->getAllTransactions();
+        $_SESSION['transactions'] = $transactionsFormatted;
+        $_SESSION['total'] = $total;
 
-            $total = CalculateTransaction::calculateTotal($dbTransactions);
-            $formattedTotal = CalculateTransaction::formatTotal($total);
-
-            return View::make(
-                'transaction/transactions',
-                ['transactions' => $dbTransactions, 'total' => $formattedTotal]
-            );
-
-        } catch (\Throwable $e) {
-            http_response_code(500);
-            return View::make('error/500', ['message' => $e->getMessage() . ' - ' . $e->getFile() . ':' . $e->getLine()]);
-        }
+        header('Location: /transactions');
+        exit;
     }
 
     public function create(): View

@@ -15,13 +15,15 @@ $dotenv->load();
 
 const STORAGE_PATH = __DIR__ . '/../storage';
 const VIEW_PATH = __DIR__ . '/../views';
+const PATH_CVS = __DIR__ . '/../transactions_sample.csv';
 
 $router = new Router();
 
 $router
     ->get('/', [HomeController::class, 'index'])
     ->get('/create', [TransactionController::class, 'create'])
-    ->post('/transactions', [TransactionController::class, 'transactions']);
+    ->post('/store', [TransactionController::class, 'store'])
+    ->get('/transactions', [TransactionController::class, 'transactions']);
 
 (new App(
     $router,

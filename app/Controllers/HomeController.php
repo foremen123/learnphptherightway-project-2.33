@@ -12,4 +12,14 @@ class HomeController
     {
         return View::make('index');
     }
+
+    public function transactions(): View
+    {
+        return View::make('transaction/transactions');
+    }
+
+    public function create(): View
+    {
+        return View::make('transaction/create');
+    }
 }

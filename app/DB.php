@@ -16,7 +16,7 @@ class DB
     public function __construct(array $config)
     {
         $defaultOptions = [
-            PDO::ATTR_EMULATE_PREPARES   => false,
+            PDO::ATTR_EMULATE_PREPARES   => true,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         ];
 

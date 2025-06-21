@@ -21,6 +21,7 @@
             tfoot tr th {
                 text-align: right;
             }
+
         </style>
     </head>
     <body>
@@ -34,30 +35,29 @@
                 </tr>
             </thead>
             <tbody>
-
-                <?php if (! empty($transactions)): ?>
-                    <?php foreach ($transactions as $transaction): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($transaction['date']) ?></td>
-                            <td><?= htmlspecialchars($transaction['check_number']) ?></td>
-                            <td><?= htmlspecialchars($transaction['description']) ?></td>
-                            <td><?= htmlspecialchars($transaction['amount']) ?></td>
-                        </tr>
-                     <?php endforeach ?>
-                <?php endif ?>
+                <?php foreach ($transactions as $transaction): ?>
+                <tr>
+                    <td><?=$transaction['date'] ?></td>
+                    <td><?=$transaction['check_number'] ?></td>
+                    <td><?=$transaction['description'] ?></td>
+                    <td style="color:
+                    <?= (float) str_replace(['$',','], '', $transaction['amount']) > 0 ? 'green' : 'red'; ?>">
+                        <?=$transaction['amount'] ?></td>
+                </tr>
+                <?php endforeach; ?>
             </tbody>
             <tfoot>
                 <tr>
                     <th colspan="3">Total Income:</th>
-                    <td><?= $total['income'] ?></td>
+                    <td><?=$total['income'] ?></td>
                 </tr>
                 <tr>
                     <th colspan="3">Total Expense:</th>
-                    <td><?= $total['expense'] ?></td>
+                    <td><?=$total['expense'] ?></td>
                 </tr>
                 <tr>
                     <th colspan="3">Net Total:</th>
-                    <td><?= $total['net'] ?></td>
+                    <td><?=$total['net'] ?></td>
                 </tr>
             </tfoot>
         </table>
