@@ -32,11 +32,11 @@ class TransactionController
 
     public function store(): void
     {
-        $fileName = $_FILES['transactions']['tmp_name'];
+        $fileName = $_FILES['upload']['tmp_name'];
         $transactionService = new Transaction();
         $transactionModel = new TransactionsModel();
 
-        $transactions = $transactionService->openFile($fileName, 'extractTransaction');
+        $transactions = $transactionService->openFile($fileName, [$transactionService, 'extractTransaction']);
 
         $transactionModel->addTransactions($transactions);
         $transactions = $transactionModel->getAll();

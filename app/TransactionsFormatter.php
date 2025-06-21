@@ -17,7 +17,11 @@ class TransactionsFormatter
 
     public static function dateDB (string $date): string
     {
-        return DateTime::createFromFormat('y-m-d', $date)->format('y-m-d');
+        $date = \DateTime::createFromFormat('d/m/Y', $date);
+        if ($date === false) {
+            throw new \InvalidArgumentException("Неверный формат даты: $date");
+        }
+        return $date->format('Y-m-d');
     }
 
     public static function dateFormatted (string $date):string
