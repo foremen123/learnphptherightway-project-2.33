@@ -56,10 +56,10 @@ class TransactionsModel extends Model
         foreach ($transactions as $transaction) {
             $transaction =
                 [
-                    'date' => $transactions[1],
-                    'check_number' => (int) $transaction[2] ?? null,
-                    'description' => $transaction[3],
-                    'amount' => TransactionsFormatter::amountDollars((float) $transaction['4'])
+                    'date' => $transactions['date'] ?? '',
+                    'check_number' => (int) $transaction['check_number'] ?? null,
+                    'description' => $transaction['description'],
+                    'amount' => TransactionsFormatter::amountDollars((float) $transaction['amount'])
                 ];
             $formattedTransactions[] = $transaction;
         }
