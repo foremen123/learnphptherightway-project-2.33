@@ -10,7 +10,7 @@
 <body>
     <h1>Create Transactions</h1>
     <hr>
-    <form enctype="multipart/form-data" method="post" action="transactions.php">
+    <form enctype="multipart/form-data" method="post" action="/store">
         <label>
             <input type="file" name="upload" accept=".csv" required>
             <input type="submit" name="button" placeholder="Отправить">

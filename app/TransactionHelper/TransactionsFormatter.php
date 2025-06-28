@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App;
-
-use DateTime;
+namespace App\TransactionHelper;
 
 class TransactionsFormatter
 {
