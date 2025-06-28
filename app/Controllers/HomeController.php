@@ -4,22 +4,39 @@ declare(strict_types = 1);
 
 namespace App\Controllers;
 
+use App\App;
+use App\Container;
+use App\Services\InvoiceService;
 use App\View;
 
 class HomeController
 {
+
+    public function __construct(private InvoiceService $invoiceService)
+    {
+    }
+
     public function index(): View
     {
+        $this->invoiceService->process([], 24);
+
+
         return View::make('index');
     }
 
-    public function transactions(): View
+    public function generator(): void
     {
-        return View::make('transaction/transactions');
+        $numbers = $this->lazyRange(1, 100);
+
+        foreach ($numbers as $key => $number) {
+            echo $key . ' - ' . $number . '<br/>';
+        }
     }
 
-    public function create(): View
+    public function lazyRange(int $start, int $end): \Generator
     {
-        return View::make('transaction/create');
+        for ($i = $start; $i <= $end; $i++) {
+            yield $i * 5 => $i;
+        }
     }
 }

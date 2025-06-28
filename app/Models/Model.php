@@ -6,10 +6,11 @@ namespace App\Models;
 
 use App\App;
 use App\DB;
+use PDO;
 
 abstract class Model
 {
-    protected DB $db;
+    protected DB|PDO $db;
 
     public function __construct()
     {

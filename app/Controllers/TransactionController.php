@@ -7,8 +7,8 @@ namespace App\Controllers;
 session_start();
 
 use App\Models\TransactionsModel;
-use App\Transaction;
-use App\TransactionsCalculate;
+use App\TransactionHelper\Transaction;
+use App\TransactionHelper\TransactionsCalculate;
 use App\View;
 
 class TransactionController
