@@ -10,7 +10,7 @@ use App\Attributes\Get;
 
 class HomeController
 {
-    #[Route('/')]
+    #[Get('/')]
     public function index(): View
     {
         return View::make('index');
